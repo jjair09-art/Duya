@@ -310,6 +310,7 @@
   #winner .wname{font-family:var(--disp);font-size:clamp(32px,6.5vw,46px);font-weight:800;color:#fff;margin-bottom:6px}
   #winner .wscore{font-family:var(--num);font-size:24px;color:var(--ivory-dim);margin-bottom:22px}
   #winner .wscore b{color:var(--brass-hi);font-size:30px}
+  #winner .w-stats{margin:0 auto 20px;max-width:440px}
 </style>
 </head>
 <body>
@@ -537,6 +538,12 @@
     <div class="champ-en">Champion</div>
     <div class="wname" id="wName">—</div>
     <div class="wscore" id="wScore">—</div>
+    <div class="tickers w-stats">
+      <div class="tick gold"><div class="k">大金</div><div class="v" id="w_bnr">0</div></div>
+      <div class="tick silver"><div class="k">小金</div><div class="v" id="w_tr">0</div></div>
+      <div class="tick bronze"><div class="k">普勝</div><div class="v" id="w_v">0</div></div>
+      <div class="tick foul"><div class="k">對手犯規</div><div class="v" id="w_of">0</div></div>
+    </div>
     <div class="row">
       <button class="m-btn m-cancel" id="wUndo">復原 Undo</button>
       <button class="m-btn m-gold" id="wNew">重新比賽 New Match</button>
@@ -984,6 +991,11 @@ function showWinner(){
   $("wName").textContent=S.names[w];
   $("wScore").innerHTML="<b>"+totalOf(w)+"</b> &nbsp;:&nbsp; "+totalOf(l)+
     " &nbsp;·&nbsp; "+S.totalFrames+" 局 Frames";
+  $("w_bnr").textContent=S.tickers[w].bnr;
+  $("w_tr").textContent =S.tickers[w].tr;
+  $("w_v").textContent  =S.tickers[w].v;
+  const wof=S.tickers[w].of, wof3=S.tickers[w].of3||0;
+  $("w_of").textContent = wof3>0 ? wof+"+"+wof3 : wof;
   $("winner").classList.add("show");
   sndWinner(); fxFireworks(14,true); flash("gold"); setTimeout(()=>fxConfetti(),1200);
 }
