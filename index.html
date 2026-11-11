@@ -310,7 +310,15 @@
   #winner .wname{font-family:var(--disp);font-size:clamp(32px,6.5vw,46px);font-weight:800;color:#fff;margin-bottom:6px}
   #winner .wscore{font-family:var(--num);font-size:24px;color:var(--ivory-dim);margin-bottom:22px}
   #winner .wscore b{color:var(--brass-hi);font-size:30px}
-  #winner .w-stats{margin:0 auto 20px;max-width:440px}
+  #winner .w-tbl{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr 1fr;gap:6px;max-width:500px;margin:0 auto 8px}
+  #winner .w-tbl .who{display:flex;flex-direction:column;justify-content:center}
+  #winner .w-tbl .who .nm{font-family:var(--disp);font-weight:800;font-size:15px;line-height:1.15;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #winner .w-tbl .who .pt{font-family:var(--num);font-size:13px;color:var(--ivory-dim)}
+  #winner .w-win .tick{border-color:rgba(245,197,66,.6);background:rgba(245,197,66,.10)}
+  #winner .w-win .who .nm{color:var(--brass-hi)}
+  #winner .w-win .who .pt b{color:var(--brass-hi)}
+  #winner .w-lose{opacity:.62;margin-bottom:20px}
 </style>
 </head>
 <body>
@@ -538,11 +546,19 @@
     <div class="champ-en">Champion</div>
     <div class="wname" id="wName">—</div>
     <div class="wscore" id="wScore">—</div>
-    <div class="tickers w-stats">
-      <div class="tick gold"><div class="k">大金</div><div class="v" id="w_bnr">0</div></div>
-      <div class="tick silver"><div class="k">小金</div><div class="v" id="w_tr">0</div></div>
-      <div class="tick bronze"><div class="k">普勝</div><div class="v" id="w_v">0</div></div>
-      <div class="tick foul"><div class="k">對手犯規</div><div class="v" id="w_of">0</div></div>
+    <div class="w-tbl w-win">
+      <div class="tick who"><div class="nm" id="wrName">—</div><div class="pt"><b id="wrPts">0</b> 分</div></div>
+      <div class="tick gold"><div class="k">大金</div><div class="v" id="wr_bnr">0</div></div>
+      <div class="tick silver"><div class="k">小金</div><div class="v" id="wr_tr">0</div></div>
+      <div class="tick bronze"><div class="k">普勝</div><div class="v" id="wr_v">0</div></div>
+      <div class="tick foul"><div class="k">對手犯規</div><div class="v" id="wr_of">0</div></div>
+    </div>
+    <div class="w-tbl w-lose">
+      <div class="tick who"><div class="nm" id="lrName">—</div><div class="pt"><b id="lrPts">0</b> 分</div></div>
+      <div class="tick gold"><div class="k">大金</div><div class="v" id="lr_bnr">0</div></div>
+      <div class="tick silver"><div class="k">小金</div><div class="v" id="lr_tr">0</div></div>
+      <div class="tick bronze"><div class="k">普勝</div><div class="v" id="lr_v">0</div></div>
+      <div class="tick foul"><div class="k">對手犯規</div><div class="v" id="lr_of">0</div></div>
     </div>
     <div class="row">
       <button class="m-btn m-cancel" id="wUndo">復原 Undo</button>
@@ -991,11 +1007,17 @@ function showWinner(){
   $("wName").textContent=S.names[w];
   $("wScore").innerHTML="<b>"+totalOf(w)+"</b> &nbsp;:&nbsp; "+totalOf(l)+
     " &nbsp;·&nbsp; "+S.totalFrames+" 局 Frames";
-  $("w_bnr").textContent=S.tickers[w].bnr;
-  $("w_tr").textContent =S.tickers[w].tr;
-  $("w_v").textContent  =S.tickers[w].v;
-  const wof=S.tickers[w].of, wof3=S.tickers[w].of3||0;
-  $("w_of").textContent = wof3>0 ? wof+"+"+wof3 : wof;
+  const setRow=(pre,p,crown)=>{
+    $(pre+"Name").textContent=(crown?"👑 ":"")+S.names[p];
+    $(pre+"Pts").textContent=totalOf(p);
+    $(pre+"_bnr").textContent=S.tickers[p].bnr;
+    $(pre+"_tr").textContent =S.tickers[p].tr;
+    $(pre+"_v").textContent  =S.tickers[p].v;
+    const of=S.tickers[p].of, of3=S.tickers[p].of3||0;
+    $(pre+"_of").textContent = of3>0 ? of+"+"+of3 : of;
+  };
+  setRow("wr",w,true); setRow("lr",l,false);
+  $("lrName").style.color = l==="A" ? "var(--redA-hi)" : "var(--blueB-hi)";
   $("winner").classList.add("show");
   sndWinner(); fxFireworks(14,true); flash("gold"); setTimeout(()=>fxConfetti(),1200);
 }
